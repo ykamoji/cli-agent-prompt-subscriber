@@ -1,4 +1,4 @@
-# cli-agent-prompt-subscriber
+# Cli Agent Subscriber
 
 Capture your Claude Code and Gemini/Antigravity conversations automatically and
 publish them to [agent-cli-dashboard](https://agent-cli-dashboard.onrender.com/) —
@@ -34,7 +34,7 @@ The installer prompts for anything not passed as a flag:
 
 | Flag | Values | Meaning |
 |---|---|---|
-| `--user-id` / `--user-name` | any | Your identity from the CLI dashboard app |
+| `--user-id` / `--user-name` | any | Your identity from the CLI dashboard app (mandatory) |
 | `--agent` | `claude`, `gemini`, `both` | Which CLI(s) to hook |
 | `--scope` | `global`, `project` | Install for all sessions or one project |
 | `--project-path` | dir | Project root (project scope only, defaults to `$PWD`) |
@@ -56,12 +56,34 @@ settings are preserved):
 | Gemini global | `~/.gemini/config/scripts/` | `~/.gemini/config/hooks.json` | `~/.gemini/config/agent_logs/` |
 | Gemini project | `<proj>/.agents/scripts/` | `<proj>/.agents/hooks.json` | `<proj>/.agents/agent_logs/` |
 
-To exclude a workspace from capture, run `./update.sh` — an interactive,
-arrow-key menu for adding/removing directories in the `denied_list.json` of
-any installed hook (use `--project-path <dir>` to manage a project install).
 Each run's egress output is appended to `history.log` in the logs directory.
 
 Requirements: `bash` and `python3` (both preinstalled on macOS/Linux).
+
+## Exclude workspaces (update.sh)
+
+Workspaces on the deny list are never captured or sent. Manage it with:
+
+```bash
+./update.sh                        # global installs
+./update.sh --project-path <dir>   # also offer a project install
+```
+
+It's fully interactive, in the style of the Claude Code pickers — navigate
+with ↑/↓ (or `j`/`k`), select with Enter, go back with `q`:
+
+1. **Pick a deny list** — auto-detects your installed hooks (Claude/Gemini ×
+   global/project) and only offers the ones that exist; "Enter a project
+   path..." lets you point at any other project install.
+2. **Choose an action** — view the list, add a directory, or remove one
+   (removal is an arrow-key pick from the current entries, no typing).
+
+Adding supports tab-completion and `~`, resolves relative paths against your
+current directory, normalizes the result (the hooks compare workspace paths
+verbatim), skips duplicates, and asks for confirmation before adding a
+directory that doesn't exist. Behind the scenes it edits the
+`denied_list.json` next to the installed scripts — hand-editing that file
+still works too; update.sh is just the safe, guided way to do it.
 
 ## Run the egress server (operators only)
 
