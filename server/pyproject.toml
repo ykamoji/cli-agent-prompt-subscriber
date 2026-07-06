@@ -1,0 +1,12 @@
+[project]
+name = "cli-agent-prompt-subscriber-server"
+version = "0.1.0"
+description = "FastAPI egress server that stores CLI agent conversation logs in MongoDB"
+readme = "../README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "pymongo>=4.17.0",
+    "python-dotenv>=1.2.2",
+]
